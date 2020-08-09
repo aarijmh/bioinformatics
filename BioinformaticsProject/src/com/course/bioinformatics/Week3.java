@@ -1,7 +1,9 @@
 package com.course.bioinformatics;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Week3 {
 	
@@ -85,11 +87,44 @@ public class Week3 {
 		}
 		return median;
 	}
+	public static String profileMostProbablekmer(String text, int k, Map<Character, List <Double>> profile) {
+		
+		double distance = Double.MIN_VALUE;
+		String median = "";
+		for(int i = 0; i < text.length() - k +1 ;i++)
+		{
+			double tempDistance = 1.0;
+			String pattern = text.substring(i,i+k);
+			for(int j = 0; j < pattern.length(); j++)
+			{
+				Character c = pattern.charAt(j);
+				tempDistance *= profile.get(c).get(j);
+			}
+			if(tempDistance > distance)
+			{
+				distance = tempDistance;
+				median = pattern;
+			}
+		}
+
+		return median;
+	}
+	
+	public static List <String> GreedyMotifSearch(List <String> dna, int k, int t) {
+		List <String> returnString = new ArrayList<>();
+		
+		
+		return returnString;
+	}
 
     		
 	public static void main(String[] args) {
+		List<String> input = UtilityFunction.readStringListFromFile("input.txt");
+		
+		List<Character> characters = List.of('A','C','G','T');
+		
+		
 		// Test motifEnumeration
-//		List<String> input = UtilityFunction.readStringListFromFile("input.txt");
 //		String [] inp = input.get(0).split(" ");
 //		
 //		motifEnumeration(input.subList(1,input.size()),Integer.valueOf(inp[0]),Integer.valueOf(inp[1]))
@@ -97,16 +132,28 @@ public class Week3 {
 		
 		//Test distanceBetweenPatternAndStrings
 		
-//		List<String> input = UtilityFunction.readStringListFromFile("input.txt");
 //		
 //		System.out.println(distanceBetweenPatternAndStrings(input.get(0),List.of(input.get(1).split(" "))));
 		
 		//Test medianString
 		
-		List<String> input = UtilityFunction.readStringListFromFile("input.txt");
+//		System.out.println(medianString(input.subList(1, input.size()), Integer.valueOf(input.get(0))));
 		
-		System.out.println(medianString(input.subList(1, input.size()), Integer.valueOf(input.get(0))));
-
+		//Test profileMostProbablekmer
+		Map<Character,List<Double>> profile = new HashMap<>();
+		String text = input.get(0);
+		int k = Integer.valueOf(input.get(1));
+		for(int i = 0; i < characters.size(); i++)
+		{
+			String [] st = input.get(i + 2).split(" ");
+			List<Double> pl = new ArrayList<>();
+			for(int j = 0; j < st.length; j++)
+			{
+				pl.add(Double.valueOf(st[j]));
+			}
+			profile.put(characters.get(i), pl);
+		}
+		System.out.println(profileMostProbablekmer(text,k,profile));
 	}
 
 }
