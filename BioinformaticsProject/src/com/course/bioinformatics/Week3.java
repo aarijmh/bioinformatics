@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
 
 public class Week3 {
 	
@@ -79,17 +81,20 @@ public class Week3 {
 		{
 			String pattern = Week1.numberToPattern(i, k);
 			int temp = distanceBetweenPatternAndStrings(pattern, dna);
+//			if(distance == 0)
+//				System.out.println(pattern);
 			if( distance > temp)
 			{
 				distance = temp;
 				median = pattern;
 			}
 		}
+//		System.out.println(distance);
 		return median;
 	}
 	public static String profileMostProbablekmer(String text, int k, Map<Character, List <Double>> profile) {
 		
-		double distance = Double.MIN_VALUE;
+		double distance = -1.0;
 		String median = "";
 		for(int i = 0; i < text.length() - k +1 ;i++)
 		{
@@ -109,12 +114,153 @@ public class Week3 {
 
 		return median;
 	}
+	public static List<Double> createEmptyList(int m)
+	{
+		List<Double> dd = new ArrayList<>();
+		for(int i=0;i<m;i++)
+			dd.add(0.0);
+		return dd;
+	}
 	
-	public static List <String> GreedyMotifSearch(List <String> dna, int k, int t) {
-		List <String> returnString = new ArrayList<>();
+	public static int scoreMotifs(List<String> motifs,int k)
+	{
+		int score = 0;
+		for(int i = 0 ; i < k ; i++)
+		{
+			java.util.Map<Character, Integer> positionMap = new java.util.HashMap<>();
+			positionMap.put('A', 0);
+			positionMap.put('C', 0);
+			positionMap.put('G', 0);
+			positionMap.put('T', 0);
+			
+			for(int j  = 0; j < motifs.size();j++)
+			{
+				positionMap.put(motifs.get(j).charAt(i), positionMap.get(motifs.get(j).charAt(i)) + 1);
+			}
+			
+			int maxFrequency = -1;
+			
+			for(Integer c : positionMap.values())
+			{
+				if(c > maxFrequency)
+					maxFrequency = c;
+			}
+			score += motifs.size() - maxFrequency;
+		}
+		
+		return score;
+	}
+	public static List <String> greedyMotifSearch(List <String> dna, int k, int t) {
+		java.util.Map<Character, Integer> positionMap = new java.util.HashMap<>();
+		positionMap.put('A', 0);
+		positionMap.put('C', 1);
+		positionMap.put('G', 2);
+		positionMap.put('T', 3);
 		
 		
-		return returnString;
+		List<String> bestMotifs = new ArrayList<>();
+		for(int i = 0; i < dna.size(); i++)
+		{
+			bestMotifs.add(dna.get(i).substring(0,k));
+		}
+		
+		String firstString = dna.get(0);
+		for(int i = 0; i < firstString.length() - k + 1; i++)
+		{
+			String motif = firstString.substring(i,i+k);
+			List<String> motifList = new ArrayList<>();
+			motifList.add(motif);
+			for(int j = 1; j < t; j++)
+			{
+				java.util.Map<Character,List<Double>> profile = new java.util.HashMap<>();
+				profile.put('A', createEmptyList(k));
+				profile.put('C', createEmptyList(k));
+				profile.put('G', createEmptyList(k));
+				profile.put('T', createEmptyList(k));
+
+				for(int m = 0; m < k; m++)
+				{
+					
+					java.util.Map<Character,Integer> frequencyMap = new java.util.LinkedHashMap<>();
+					frequencyMap.put('A', 0);
+					frequencyMap.put('C', 0);
+					frequencyMap.put('G', 0);
+					frequencyMap.put('T', 0);
+					for(int n = 0 ; n < motifList.size() ; n++)
+					{
+						frequencyMap.put(motifList.get(n).charAt(m), frequencyMap.get(motifList.get(n).charAt(m)) + 1);
+					}
+					profile.get('A').set(m, frequencyMap.get('A')/(double)motifList.size());
+					profile.get('C').set(m, frequencyMap.get('C')/(double)motifList.size());
+					profile.get('G').set(m, frequencyMap.get('G')/(double)motifList.size());
+					profile.get('T').set(m, frequencyMap.get('T')/(double)motifList.size());
+				}
+				motifList.add(profileMostProbablekmer(dna.get(j), k,profile));
+			}
+			if(scoreMotifs(motifList, k) < scoreMotifs(bestMotifs, k))
+			{
+				bestMotifs = new ArrayList<>(motifList);
+			}
+		}
+		
+		return bestMotifs;
+	}
+	
+	
+	public static List <String> greedyMotifSearchPseudoCounts(List <String> dna, int k, int t) {
+		java.util.Map<Character, Integer> positionMap = new java.util.HashMap<>();
+		positionMap.put('A', 0);
+		positionMap.put('C', 1);
+		positionMap.put('G', 2);
+		positionMap.put('T', 3);
+		
+		
+		List<String> bestMotifs = new ArrayList<>();
+		for(int i = 0; i < dna.size(); i++)
+		{
+			bestMotifs.add(dna.get(i).substring(0,k));
+		}
+		
+		String firstString = dna.get(0);
+		for(int i = 0; i < firstString.length() - k + 1; i++)
+		{
+			String motif = firstString.substring(i,i+k);
+			List<String> motifList = new ArrayList<>();
+			motifList.add(motif);
+			for(int j = 1; j < t; j++)
+			{
+				java.util.Map<Character,List<Double>> profile = new java.util.HashMap<>();
+				profile.put('A', createEmptyList(k));
+				profile.put('C', createEmptyList(k));
+				profile.put('G', createEmptyList(k));
+				profile.put('T', createEmptyList(k));
+
+				for(int m = 0; m < k; m++)
+				{
+					
+					java.util.Map<Character,Integer> frequencyMap = new java.util.LinkedHashMap<>();
+					frequencyMap.put('A', 1);
+					frequencyMap.put('C', 1);
+					frequencyMap.put('G', 1);
+					frequencyMap.put('T', 1);
+					for(int n = 0 ; n < motifList.size() ; n++)
+					{
+						frequencyMap.put(motifList.get(n).charAt(m), frequencyMap.get(motifList.get(n).charAt(m)) + 1);
+					}
+					profile.get('A').set(m, frequencyMap.get('A')/((double)motifList.size()+4.0));
+					profile.get('C').set(m, frequencyMap.get('C')/((double)motifList.size()+4.0));
+					profile.get('G').set(m, frequencyMap.get('G')/((double)motifList.size()+4.0));
+					profile.get('T').set(m, frequencyMap.get('T')/((double)motifList.size()+4.0));
+				}
+				motifList.add(profileMostProbablekmer(dna.get(j), k,profile));
+			}
+			if(scoreMotifs(motifList, k) < scoreMotifs(bestMotifs, k))
+			{
+				bestMotifs = new ArrayList<>(motifList);
+			}
+		}
+		
+		return bestMotifs;
 	}
 
     		
@@ -137,23 +283,34 @@ public class Week3 {
 		
 		//Test medianString
 		
-//		System.out.println(medianString(input.subList(1, input.size()), Integer.valueOf(input.get(0))));
+		System.out.println(medianString(input.subList(1, input.size()), Integer.valueOf(input.get(0))));
 		
 		//Test profileMostProbablekmer
-		Map<Character,List<Double>> profile = new HashMap<>();
-		String text = input.get(0);
-		int k = Integer.valueOf(input.get(1));
-		for(int i = 0; i < characters.size(); i++)
-		{
-			String [] st = input.get(i + 2).split(" ");
-			List<Double> pl = new ArrayList<>();
-			for(int j = 0; j < st.length; j++)
-			{
-				pl.add(Double.valueOf(st[j]));
-			}
-			profile.put(characters.get(i), pl);
-		}
-		System.out.println(profileMostProbablekmer(text,k,profile));
+//		Map<Character,List<Double>> profile = new HashMap<>();
+//		String text = input.get(0);
+//		int k = Integer.valueOf(input.get(1));
+//		for(int i = 0; i < characters.size(); i++)
+//		{
+//			String [] st = input.get(i + 2).split(" ");
+//			List<Double> pl = new ArrayList<>();
+//			for(int j = 0; j < st.length; j++)
+//			{
+//				pl.add(Double.valueOf(st[j]));
+//			}
+//			profile.put(characters.get(i), pl);
+//		}
+//		System.out.println(profileMostProbablekmer(text,k,profile));
+		
+		
+		//Test greedy motif search
+//		String [] inputFirst = input.get(0).split(" ");
+//		greedyMotifSearch(input.subList(1, input.size()), Integer.valueOf(inputFirst[0]), Integer.valueOf(inputFirst[1]))
+//		.forEach(x->System.out.print(x + " "));
+		
+		//Test greedy motif search pseudocount
+//		String [] inputFirst = input.get(0).split(" ");
+//		greedyMotifSearchPseudoCounts(input.subList(1, input.size()), Integer.valueOf(inputFirst[0]), Integer.valueOf(inputFirst[1]))
+//		.forEach(x->System.out.println(x));
 	}
 
 }
