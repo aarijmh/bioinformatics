@@ -81,15 +81,16 @@ public class Week3 {
 		{
 			String pattern = Week1.numberToPattern(i, k);
 			int temp = distanceBetweenPatternAndStrings(pattern, dna);
-//			if(distance == 0)
-//				System.out.println(pattern);
+			
+			if(temp == 0)
+				System.out.println(pattern);
 			if( distance > temp)
 			{
 				distance = temp;
 				median = pattern;
 			}
 		}
-//		System.out.println(distance);
+		System.out.println(distance);
 		return median;
 	}
 	public static String profileMostProbablekmer(String text, int k, Map<Character, List <Double>> profile) {
@@ -283,7 +284,7 @@ public class Week3 {
 		
 		//Test medianString
 		
-		System.out.println(medianString(input.subList(1, input.size()), Integer.valueOf(input.get(0))));
+//		System.out.println(medianString(input.subList(1, input.size()), Integer.valueOf(input.get(0))));
 		
 		//Test profileMostProbablekmer
 //		Map<Character,List<Double>> profile = new HashMap<>();
@@ -307,10 +308,31 @@ public class Week3 {
 //		greedyMotifSearch(input.subList(1, input.size()), Integer.valueOf(inputFirst[0]), Integer.valueOf(inputFirst[1]))
 //		.forEach(x->System.out.print(x + " "));
 		
-		//Test greedy motif search pseudocount
+//		Test greedy motif search pseudocount
 //		String [] inputFirst = input.get(0).split(" ");
 //		greedyMotifSearchPseudoCounts(input.subList(1, input.size()), Integer.valueOf(inputFirst[0]), Integer.valueOf(inputFirst[1]))
 //		.forEach(x->System.out.println(x));
+		
+		List<String> testList = List.of("CTCGATGAGTAGGAAAGTAGTTTCACTGGGCGAACCACCCCGGCGCTAATCCTAGTGCCC",
+				"GCAATCCTACCCGAGGCCACATATCAGTAGGAACTAGAACCACCACGGGTGGCTAGTTTC",
+				"GGTGTTGAACCACGGGGTTAGTTTCATCTATTGTAGGAATCGGCTTCAAATCCTACACAG");
+		System.out.println(medianString(testList, 7));
+		
+//		
+		Map<Character, List<Double>> profile = 
+		 Map.of('A',List.of(0.4, 0.3, 0.0, 0.1, 0.0, 0.9),
+				'C',List.of(0.2, 0.3, 0.0, 0.4, 0.0, 0.1),
+				'G',List.of(0.1, 0.3, 1.0, 0.1, 0.5, 0.0),
+				'T',List.of(0.3, 0.1, 0.0, 0.4, 0.5, 0.0));
+		
+		double tempDistance = 1.0;
+		String pattern ="CAGTGA";
+		for(int j = 0; j < pattern.length(); j++)
+		{
+			Character c = pattern.charAt(j);
+			tempDistance *= profile.get(c).get(j);
+		}
+		System.out.println("Profile  : " +  tempDistance);
 	}
 
 }

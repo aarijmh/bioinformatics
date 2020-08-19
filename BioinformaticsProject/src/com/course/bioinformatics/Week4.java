@@ -58,14 +58,14 @@ public class Week4 {
 	public static List<String> randomizedMotifSearch(List<String> dna, int k, int t) {
 		List<String> bestMotifs = new ArrayList<>();
 
-		for (int i = 0; i < dna.size(); i++) {
-			int index = random.nextInt(dna.get(i).length() - k);
-		bestMotifs.add(dna.get(i).substring(index, index + k));
-		}
-//		bestMotifs.add("GTC");
-//		bestMotifs.add("CCC");
-//		bestMotifs.add("ATA");
-//		bestMotifs.add("GCT");
+//		for (int i = 0; i < dna.size(); i++) {
+//			int index = random.nextInt(dna.get(i).length() - k);
+//		bestMotifs.add(dna.get(i).substring(index, index + k));
+//		}
+		bestMotifs.add("CCA");
+		bestMotifs.add("CCT");
+		bestMotifs.add("CTT");
+		bestMotifs.add("TTG");
 		
 		List<String> motifList = new ArrayList<>();
 		while (true) {
@@ -190,12 +190,12 @@ public class Week4 {
 		
 //		String [] i = input.get(0).split(" ");
 //		
-		String [] i = input.get(0).split(" ");
-		List<String> lastMotifs;
-		int count = 0;
-		int k = Integer.valueOf(i[0]);
-		int t = Integer.valueOf(i[1]);
-		int n =  Integer.valueOf(i[2]);
+//		String [] i = input.get(0).split(" ");
+//		List<String> lastMotifs;
+//		int count = 0;
+//		int k = Integer.valueOf(i[0]);
+//		int t = Integer.valueOf(i[1]);
+//		int n =  Integer.valueOf(i[2]);
 		
 //				lastMotifs = gibbsRandomizedMotifSearch(input.subList(1, input.size()),k,t,n);
 //	
@@ -213,14 +213,11 @@ public class Week4 {
 //				lastMotifs.forEach(System.out::println);
 		
 		List<String> inputList = new ArrayList<>();
-		inputList.add("ATGAGGTC");
-
-				inputList.add("AGCCCTAGA");
-
-						inputList.add("AAAATAGAT");
-
-								inputList.add("ATTGTGCTA");
-								randomizedMotifSearch(inputList,3,4).forEach(x->System.out.print(x+","));;
+		inputList.add("AAGCCAAA");
+		inputList.add("AATCCTGG");
+		inputList.add("GCTACTTG");
+		inputList.add("ATGTTTTG");
+		randomizedMotifSearch(inputList,3,4).forEach(x->System.out.print(x+","));;
 
 	}
 }
